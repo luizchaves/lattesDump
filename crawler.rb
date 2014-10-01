@@ -6,15 +6,14 @@ class Crawler
 
 	def initialize
 		@agent = Mechanize.new
-		f = File.read("data/doutores.dat")
+		f = File.read("data/test.dat")
 		@lattes_ids = f.split "\n"
 	end
 
 	def scrapy
 		lattesPool = Thread.pool(10)
 		@lattes_ids.each{|id|
-		.each{|id|
-			next if File.exist?("lattes/#{id}.zip")
+			next if File.exist?("#{id}.zip")
 			lattesPool.process do
 				# TODO try reopen url
 				url = "http://buscatextual.cnpq.br/buscatextual/sevletcaptcha?idcnpq=#{id}"
@@ -23,12 +22,13 @@ class Crawler
 				result = `tesseract temp/#{id}.png temp/#{id}; cat temp/#{id}.txt; rm temp/#{id}.png temp/#{id}.txt`
 				url = "http://buscatextual.cnpq.br/buscatextual/download.do?metodo=enviar&idcnpq=#{id}&palavra=#{result}"
 				page  = @agent.get url
-				page.save "lattes/#{id}.zip"
+				page.save "#{id}.zip"
 				puts "Lattes #{id}"
 				# `unzip lattes/#{id}.zip ; rm lattes/#{id}.zip; mv lattes/curriculo.xml lattes/#{id}.xml`
 			end
 		}
 		lattesPool.shutdown
+		`mv *.zip lattes`
 	end
 
 end
