@@ -1,0 +1,200 @@
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<title>CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico</title> 
+    
+    <script src="js/util.js" language="Javascript" ></script> 
+	<link rel="stylesheet" href="../buscatextual/css/busca_textual.css" title="standard" />  
+    <link rel="alternate stylesheet" type="text/css" href="../buscatextual/css/busca_textual.css" title="contraste" />
+    <script language="Javascript" src="js/comum.js"></script>
+    <script src="js/busca_textual.js"></script> 
+    
+    <!-- Novos -->   
+    <link rel="stylesheet" href="../buscatextual/css/import.css" /> 
+	<link rel="stylesheet" href="../buscatextual/css/home.css" />
+    <script src="../buscatextual/js/jquery.min.js" ></script>
+	<script src="../buscatextual/js/tooltip-position.js"></script>
+	<script src="../buscatextual/js/jquery.tipsy.js"></script>
+	<script src="../buscatextual/js/actions-jquery.js"></script>
+    <!---->
+	<script type="text/javascript" src="../buscatextual/js/acessibilidade.js"></script>
+    <script>
+    
+    function download(){
+		captcha(document.getElementById("confirmarCaptcha"),'captcha');	    
+    }
+	function enviarCaptcha(){
+		var form = document.forms[0];
+		form.metodo.value="enviar";   
+	    form.submit();        
+    }
+
+	function downloadDireto(){
+		var form = document.forms[0];
+   		form.metodo.value="enviar";
+	    form.submit();        
+    }
+
+    </script>l
+	    
+    <style>
+		label {display:block; float:left; width:22%; text-align:right; position:relative; top:3px}
+		.busca {width:40%}
+    </style>
+<!-- Analytics - Inicio -->
+
+		<script type="text/javascript">
+		
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-35652740-1']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		
+		</script>
+		
+<!-- Analytics - Fim -->  
+</head>
+	   
+<body>
+
+<form name="downloadForm" method="POST" action="/buscatextual/download.do">
+  
+  <input type="hidden" name="metodo" value="enviar" id="metodo">
+  <input type="hidden" name="idcnpq" value="" id="idcnpq">
+  				
+   <div class="layout-cell layout-cell-12 moldal-background modal-body" id="idmodaldownload"> 
+    		<div class="layout-cell-pad-main">
+
+				<div class="layout-cell layout-cell-12">
+
+  	  				
+
+
+
+
+
+<script>
+
+		function updateCaptcha() {
+        	var src = "/buscatextual/sevletcaptcha?&ts=" + (new Date()).getTime();
+        	document.getElementById("imgCaptcha").src = src;
+        	document.getElementById('palavra').focus();
+        }
+        function alertaMensagem(msg){	
+           alert(msg);
+           updateCaptcha();
+        }
+        function fecharModalCaptcha(){
+            document.getElementById('captcha').style.display = 'none';	
+            document.getElementById('botaoEnviar').style.display = 'inline';
+            document.getElementById('botaoCancelar').style.display = 'inline';
+        }
+</script>
+
+
+<style>
+    .captcha {
+		border: 2px solid #000000;
+    	border-radius: 5px 5px 5px 5px;
+    	margin: 116px auto 0;
+    	min-height: 176px;
+    	padding: 0 1px;
+    	position: static;
+    	width: 310px;
+    	z-index: 9999;
+	}
+</style>
+
+
+   	
+   	
+   		<div class="layout-cell layout-cell-12 moldal-background modal-body" id="captcha" style="display:none">
+   	
+
+ 
+		<div class="captcha">
+		
+			<div class="layout-cell layout-cell-12 moldal-background modal-body"> 
+	
+		 		<div class="layout-cell-pad-main">
+	
+					<div class="layout-cell layout-cell-12">
+			
+						<div id="recaptcha_widget">
+							<h2>
+								Código de segurança
+							</h2>
+							<span class="recaptcha_only_if_image">
+								<h3>
+									Digite os caracteres da imagem
+								</h3>
+							</span>
+							
+							<input type="text" name="palavra" id="palavra" class="input-text"	onkeypress="defineEnterEscPress(event,'confirmarCaptcha','cancelarCaptcha')" />
+							
+							<div class="loading" style="margin-top: 5px; margin-bottom: 5;"	id="recaptcha_image">
+								<img border="0" alt="Captcha" id="imgCaptcha" style="px-webkit-border-radius: 5px 5px 5px 5px; border-radius: 5px 5px 5px 5px;"	src="/buscatextual/sevletcaptcha" />
+							</div>
+							<div>
+								<a href="javascript:updateCaptcha()"> <img src="images/bgs-captchar-reload.png" /></a>
+							</div>
+							
+						</div>
+						
+						<div class='control-bar-wrapper'>
+							<a onclick="javascript:enviarCaptcha()" href="javascript:void(0)" id="confirmarCaptcha" class="button">
+								<span class='mini-ico mini-ico-ok'></span> Confirmar 
+							</a>
+							<a onclick="javascript:fecharModalCaptcha()" href="javascript:void(0)" class="button">
+								<span class='mini-ico mini-ico-x'></span> Cancelar 
+							</a>
+						</div>
+				
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+       alertaMensagem('Os caracteres informados não conferem com os da imagem!');            
+    </script>
+
+      
+      
+            		
+            	<br/>
+            	
+            </div>
+ 
+   		</div>
+ 	
+   	</div>
+   	
+</form>
+</body>
+<script>
+	
+		
+		
+			javascript:download();
+		
+	
+	
+</script>
+
+</html>
