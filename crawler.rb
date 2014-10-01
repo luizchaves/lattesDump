@@ -4,10 +4,8 @@ require 'thread/pool'
 
 class Crawler
 
-	def initialize
-		@agent = Mechanize.new
-		ARGV[0] = 'data/doutores.dat' if ARGV[0] == ''
-		f = File.read("#{ARGV[0]}")
+	def initialize(data)
+		f = File.read(data)
 		@lattes_ids = f.split "\n"
 	end
 
@@ -17,14 +15,11 @@ class Crawler
 		@lattes_ids.each{|id|
 			next if File.exist?("lattes/#{id}.zip")
 			lattesPool.process do
-				# TODO try reopen url
-				url = "http://buscatextual.cnpq.br/buscatextual/sevletcaptcha?idcnpq=#{id}"
-				page  = @agent.get url
-				page.save "temp/#{id}.png"
-				result = `tesseract temp/#{id}.png temp/#{id}; cat temp/#{id}.txt; rm temp/#{id}.png temp/#{id}.txt`
-				url = "http://buscatextual.cnpq.br/buscatextual/download.do?metodo=enviar&idcnpq=#{id}&palavra=#{result}"
-				page  = @agent.get url
-				page.save "#{id}.zip"
+				(0..10).to_a.each{
+					getLattes(id)
+					break unless File.read("#{id}.zip").include? "DOCTYPE"
+					`rm #{id}.zip temp/#{id}.png temp/#{id}.txt`
+				}
 				puts "Lattes #{id}"
 				# `unzip lattes/#{id}.zip ; rm lattes/#{id}.zip; mv lattes/curriculo.xml lattes/#{id}.xml`
 			end
@@ -33,10 +28,35 @@ class Crawler
 		`mv *.zip lattes`
 	end
 
+	def getLattes(id)
+		agent = Mechanize.new
+		# TODO try reopen url
+		url = "http://buscatextual.cnpq.br/buscatextual/sevletcaptcha?idcnpq=#{id}"
+		page  = agent.get url
+		page.save "temp/#{id}.png"
+		result = checkCaptcha id
+		url = "http://buscatextual.cnpq.br/buscatextual/download.do?metodo=enviar&idcnpq=#{id}&palavra=#{result}"
+		page  = agent.get url
+		page.save "#{id}.zip"
+	end
+
+	def checkCaptcha(id)
+		result = ''
+		(0..10).to_a.each{
+			result = `tesseract temp/#{id}.png temp/#{id}; cat temp/#{id}.txt; rm temp/#{id}.png temp/#{id}.txt`
+			result = result.upcase
+			break if result.strip != "" && result.strip  =~ /^[A-Z0-9]*$/
+		}
+		result
+	end
+
 end
 
-c = Crawler.new
 begin
+	data = ARGV[0]
+	data ||= 'data/doutores.dat'
+	c = Crawler.new data
+
 	puts "\n\n===>Gerando os XML do Lattes"
 	start_time = Time.now
 	

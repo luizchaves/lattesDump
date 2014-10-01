@@ -1,3 +1,7 @@
+lattes/*.xml
+lattes/*.zip
+temp/*.png
+temp/*.txt
 *.gem
 *.rbc
 /.config
