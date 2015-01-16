@@ -1,8 +1,11 @@
 require 'mechanize'
 require 'open-uri'
 require 'thread/pool'
+require 'zip'
 
 class Crawler
+
+	# updated PG
 
 	def initialize(data)
 		f = File.read(data)
@@ -13,7 +16,7 @@ class Crawler
 		`rm temp/*`
 		lattesPool = Thread.pool(10)
 		@lattes_ids.each{|id|
-			next if File.exist?("lattes/#{id}.zip")
+			next if File.exist?("lattes/#{id}.zip") || File.exist?("lattes/#{id}.xml")
 			lattesPool.process do
 				(0..10).to_a.each{
 					getLattes(id)
@@ -21,11 +24,9 @@ class Crawler
 					`rm #{id}.zip temp/#{id}.png temp/#{id}.txt`
 				}
 				puts "Lattes #{id}"
-				# `unzip lattes/#{id}.zip ; rm lattes/#{id}.zip; mv lattes/curriculo.xml lattes/#{id}.xml`
 			end
 		}
 		lattesPool.shutdown
-		`mv *.zip lattes`
 	end
 
 	def getLattes(id)
@@ -37,7 +38,9 @@ class Crawler
 		result = checkCaptcha id
 		url = "http://buscatextual.cnpq.br/buscatextual/download.do?metodo=enviar&idcnpq=#{id}&palavra=#{result}"
 		page  = agent.get url
-		page.save "#{id}.zip"
+		filename = "#{id}.zip"
+		page.save filename
+		unzip_file (filename, "lattes", filename.sub(".zip", ".xml"))
 	end
 
 	def checkCaptcha(id)
@@ -48,6 +51,16 @@ class Crawler
 			break if result.strip != "" && result.strip  =~ /^[A-Z0-9]*$/
 		}
 		result
+	end
+
+	def unzip_file (file, destination, filename)
+	  Zip::ZipFile.open(file) { |zip_file|
+	   zip_file.each { |f|
+	     f_path=File.join(destination, filename)
+	     FileUtils.mkdir_p(File.dirname(f_path))
+	     zip_file.extract(f, f_path) unless File.exist?(f_path)
+	   }
+	  }
 	end
 
 end
